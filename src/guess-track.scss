@@ -1,0 +1,86 @@
+@import './colors.scss';
+
+.guess-track {
+  $column-width: 15vw;
+  $column-gap: 2vw;
+  width: 5 * $column-width + 4 * $column-gap;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: repeat(5, $column-width);
+  grid-template-rows: 15vw 30vw 15vw;
+  grid-column-gap: $column-gap;
+  grid-row-gap: 4vw;
+
+  .picker-option {
+    user-select: none;
+    z-index: 0;
+    display: flex;
+    align-items: flex-end;
+    background-size: cover;
+    border: solid 1px $quaternery;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+
+    $duration: 0.1s;
+    $easing: ease-out;
+    $border-width: 5px;
+
+    transition: width $duration $easing, height $duration $easing, margin $duration $easing,
+      border $duration $easing, left none;
+
+    p {
+      width: 100%;
+      text-align: center;
+      padding: 10px 0;
+      color: $primary;
+      background-color: rgba($quinary, 0.8);
+    }
+
+    $size-increase: 40%;
+    &:hover:not(.picker-option-selected):not(.dummy) {
+      width: 100% + $size-increase;
+      height: 100% + $size-increase;
+      z-index: 1;
+      margin: (-$size-increase / 2) 0 0 (-$size-increase / 2);
+    }
+
+    &:hover:not(.dummy),
+    &.picker-option-selected {
+      position: relative;
+      left: -$border-width;
+      top: -$border-width;
+      border-width: $border-width;
+      border-color: $secondary;
+    }
+
+    &.dummy {
+      border-style: dashed;
+    }
+  }
+
+  .artist {
+    grid-row: 1 / 2;
+    &.picker-option-selected {
+      transition: none;
+      grid-column: 4 / span 2;
+      grid-row: 2 / 3;
+    }
+  }
+
+  .track {
+    grid-row: 3 / 4;
+    -webkit-backdrop-filter: blur(5px);
+
+    &.picker-option-selected {
+      transition: none;
+      grid-column: 1 / span 2;
+      grid-row: 2 / 3;
+    }
+  }
+
+  .player {
+    width: 100%;
+  }
+}
