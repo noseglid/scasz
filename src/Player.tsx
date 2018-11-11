@@ -39,9 +39,7 @@ export class Player extends React.Component<Props, State> {
       return;
     }
 
-    console.log('playing track:', trackObject.name);
     await spotify.play(trackObject.uri, deviceID, seekSeconds);
-    console.log('played');
   }
 
   componentDidMount() {
@@ -57,10 +55,6 @@ export class Player extends React.Component<Props, State> {
       });
       this.ref.addListener('playback_error', ({ message }) => {
         console.error(message);
-      });
-
-      this.ref.addListener('player_state_changed', async (state) => {
-        console.log('player state change:', state);
       });
 
       this.ref.addListener('ready', ({ device_id }) => {
@@ -79,7 +73,6 @@ export class Player extends React.Component<Props, State> {
       if (connected !== true) {
         console.error('failed to connect');
       }
-      console.log('connected');
     };
 
     if (!spotifyReady) {
