@@ -12,22 +12,40 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 interface Props {
   spotify: SpotifyBindings;
   trackObject: TrackObject;
+  seekSeconds?: number;
 }
 
-export class Player extends React.Component<Props> {
+interface State {
+  deviceID?: string;
+}
+
+export class Player extends React.Component<Props, State> {
   private ref: Spotify.SpotifyPlayer;
 
   constructor(props: Props) {
     super(props);
+    this.state = {};
     this.ref = new Spotify.Player({
       name: 'Music quiz web player',
       getOAuthToken: (cb) => cb(this.props.spotify.getAccessToken()),
     });
   }
 
+  private async playTrack(trackObject: TrackObject) {
+    const { deviceID } = this.state;
+    const { spotify, seekSeconds } = this.props;
+    if (!deviceID) {
+      console.error('No deviceid when playing track');
+      return;
+    }
+
+    console.log('playing track:', trackObject.name);
+    await spotify.play(trackObject.uri, deviceID, seekSeconds);
+    console.log('played');
+  }
+
   componentDidMount() {
-    const initializePlayer = () => {
-      // Error handling
+    const initializePlayer = async () => {
       this.ref.addListener('initialization_error', ({ message }) => {
         console.error(message);
       });
@@ -41,31 +59,27 @@ export class Player extends React.Component<Props> {
         console.error(message);
       });
 
-      // Playback status updates
-      // this.ref.addListener('player_state_changed', (state) => {
-      //   console.log(state);
-      // });
-
-      // Ready
-      this.ref.addListener('ready', ({ device_id }) => {
-        console.log('Ready with Device ID', device_id);
-        fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`, {
-          method: 'PUT',
-          body: JSON.stringify({ uris: [this.props.trackObject.uri] }),
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${this.props.spotify.getAccessToken()}`,
-          },
-        });
-        this.ref.setVolume(0.3);
+      this.ref.addListener('player_state_changed', async (state) => {
+        console.log('player state change:', state);
       });
 
-      // Not Ready
+      this.ref.addListener('ready', ({ device_id }) => {
+        console.log('Ready with Device ID', device_id);
+        this.setState(
+          () => ({ deviceID: device_id }),
+          () => this.playTrack(this.props.trackObject)
+        );
+      });
+
       this.ref.addListener('not_ready', ({ device_id }) => {
         console.log('Device ID has gone offline', device_id);
       });
 
-      this.ref.connect();
+      const connected = await this.ref.connect();
+      if (connected !== true) {
+        console.error('failed to connect');
+      }
+      console.log('connected');
     };
 
     if (!spotifyReady) {
@@ -77,6 +91,14 @@ export class Player extends React.Component<Props> {
 
   componentWillUnmount() {
     this.ref.disconnect();
+  }
+
+  async componentWillReceiveProps(nextProps: Props) {
+    if (this.props.trackObject !== nextProps.trackObject) {
+      this.ref.pause();
+      const { trackObject } = nextProps;
+      await this.playTrack(trackObject);
+    }
   }
 
   render() {

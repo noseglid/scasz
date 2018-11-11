@@ -5,6 +5,10 @@ $roboto-font-path: '~node_modules/roboto-fontface/fonts';
 body {
   margin: 0;
   background-color: $quinary;
+}
+
+* {
+  color: $tertiary;
   font-family: 'Roboto', sans-serif;
 }
 

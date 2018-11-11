@@ -1,0 +1,40 @@
+@import './colors.scss';
+
+.submit {
+  height: 5vw;
+  width: 100%;
+  font-size: 18px;
+  color: white;
+
+  &[disabled] {
+    background-color: rgba($tertiary, 0.3);
+  }
+
+  &:not([disabled]) {
+    font-weight: bold;
+  }
+
+  &:hover:not([disabled]) {
+    background-color: $primary;
+  }
+
+  &:not([disabled]):not(:hover) {
+    background-color: rgba($tertiary, 0.3);
+    animation-name: pulse;
+    animation-duration: 0.8s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-fill-mode: both;
+    animation-timing-function: linear;
+
+    @keyframes pulse {
+      from {
+        background-color: rgba($tertiary, 0.3);
+      }
+
+      to {
+        background-color: $primary;
+      }
+    }
+  }
+}

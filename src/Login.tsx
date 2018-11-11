@@ -1,7 +1,6 @@
 import './login.scss';
 import * as React from 'react';
 import { stringify } from 'querystring';
-import { Button } from './components/Button';
 
 const onLogin = () => {
   const qs = stringify({
@@ -16,6 +15,6 @@ const onLogin = () => {
 
 export const Login = () => (
   <div className="login">
-    <Button onClick={onLogin}>Login</Button>
+    <button onClick={onLogin}>Login</button>
   </div>
 );

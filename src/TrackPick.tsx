@@ -7,7 +7,7 @@ interface Props {
   trackObject: TrackObject;
   spotify: Spotify;
   pickedTrack?: string;
-  onPick: (id: string) => void;
+  onPick: (id: string, name: string) => void;
 }
 
 interface State {
@@ -50,7 +50,7 @@ export class TrackPick extends React.Component<Props, State> {
             key={trackObject.id}
             trackObject={trackObject}
             selected={trackObject.id === pickedTrack}
-            onClick={() => this.props.onPick(trackObject.id)}
+            onClick={() => this.props.onPick(trackObject.id, trackObject.name)}
           />
         ))}
       </>

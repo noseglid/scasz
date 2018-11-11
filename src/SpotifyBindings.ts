@@ -39,6 +39,10 @@ interface PagedResponse<T> {
   items: T[];
 }
 
+interface RequestOptions extends RequestInit {
+  query?: ParsedUrlQuery;
+}
+
 export class Spotify {
   private accessToken: string;
 
@@ -50,7 +54,10 @@ export class Spotify {
     return this.accessToken;
   }
 
-  private async request<T>(endpoint: string, query?: ParsedUrlQuery): Promise<T> {
+  private async request<T>(
+    endpoint: string,
+    { query, method, headers, ...rest }: RequestOptions = {}
+  ): Promise<T> {
     let qs = '';
     if (undefined !== query) {
       qs = `?${stringify(query)}`;
@@ -58,15 +65,43 @@ export class Spotify {
 
     const response = await fetch(`https://api.spotify.com/v1/${endpoint}${qs}`, {
       headers: {
+        'Content-Type': 'application/json; charset=utf-8',
         Authorization: `Bearer ${this.accessToken}`,
+        ...headers,
       },
+      method,
+      ...rest,
     });
 
     if (!response.ok) {
       return Promise.reject(response.statusText);
     }
 
-    return await response.json();
+    var ctype = response.headers.get('content-type');
+
+    if (ctype === null) {
+      return <any>undefined;
+    }
+
+    if (ctype.split(';')[0] === 'application/json') {
+      return await response.json();
+    }
+
+    return <any>Promise.resolve();
+  }
+
+  async play(trackID: string, deviceID: string, positionSeconds: number = 0) {
+    await this.request('me/player/play', {
+      query: {
+        device_id: deviceID,
+      },
+      method: 'PUT',
+      body: JSON.stringify({ uris: [trackID], position_ms: positionSeconds * 1000 }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.accessToken}`,
+      },
+    });
   }
 
   async getTrack(trackID: string): Promise<TrackObject> {
@@ -89,7 +124,8 @@ export class Spotify {
   }
 
   async getTopArtists(): Promise<ArtistObject[]> {
-    return (await this.request<PagedResponse<ArtistObject>>(`me/top/artists`)).items;
+    const artists = await this.request<PagedResponse<ArtistObject>>(`me/top/artists`);
+    return artists.items;
   }
 
   async getRecommendations({
@@ -108,6 +144,6 @@ export class Spotify {
       query.seed_tracks = trackIDs.slice(0, Math.max(0, 5 - artistIDs.length)).join(',');
     }
 
-    return (await this.request<Payload>(`recommendations`, query)).tracks;
+    return (await this.request<Payload>(`recommendations`, { query })).tracks;
   }
 }
