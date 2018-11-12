@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ArtistObject } from './SpotifyBindings';
+import { ArtistObject } from '../SpotifyBindings';
 import cn from 'classnames';
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
   onClick: () => void;
 }
 
-export const Artist: React.SFC<Props> = ({ artist, selected, onClick }) => {
+export const Artist: React.FunctionComponent<Props> = ({ artist, selected, onClick }) => {
   let image = artist.images.find((i) => i.width === 640);
   if (image === undefined) {
     image = artist.images[0];

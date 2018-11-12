@@ -1,5 +1,5 @@
 import './login.scss';
-import * as React from 'react';
+import React, { FunctionComponent } from 'react';
 import { stringify } from 'querystring';
 
 const onLogin = () => {
@@ -13,7 +13,7 @@ const onLogin = () => {
   window.location.assign(`https://accounts.spotify.com/authorize?${qs}`);
 };
 
-export const Login = () => (
+export const Login: FunctionComponent = () => (
   <div className="login">
     <button onClick={onLogin}>Login</button>
   </div>

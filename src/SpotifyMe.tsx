@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 
 interface Props {
   access_token: string;
@@ -11,37 +11,24 @@ interface UserObject {
   display_name: string;
 }
 
-interface State {
-  user?: UserObject;
-}
+export const SpotifyMe: FunctionComponent<Props> = ({ access_token }) => {
+  const [user, setUser] = useState<UserObject | undefined>(undefined);
+  useEffect(() => {
+    const initialize = async () => {
+      const response = await fetch(`https://api.spotify.com/v1/me`, {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
+      setUser(await response.json());
+    };
 
-export class SpotifyMe extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {};
+    initialize();
+  }, []);
+
+  if (user === undefined) {
+    return null;
   }
 
-  async componentDidMount() {
-    const response = await fetch(`https://api.spotify.com/v1/me`, {
-      headers: {
-        Authorization: `Bearer ${this.props.access_token}`,
-      },
-    });
-
-    const user: UserObject = await response.json();
-    this.setState({ user });
-  }
-
-  render() {
-    if (!this.state.user) {
-      return null;
-    }
-
-    const {
-      user: { id },
-    } = this.state;
-
-    console.log(this.state.user);
-    return <h1>User {id}</h1>;
-  }
-}
+  return <h1>User {user.id}</h1>;
+};

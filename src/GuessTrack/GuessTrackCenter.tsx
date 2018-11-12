@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { FunctionComponent } from 'react';
 import { Submit } from './Submit';
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
   onSubmit: () => void;
 }
 
-export const GuessTrackCenter = ({ artistName, trackName, onSubmit }: Props) => (
+export const GuessTrackCenter: FunctionComponent<Props> = ({ artistName, trackName, onSubmit }) => (
   <div className="guess-track-center">
     <div className="track-name">
       <span>{trackName}</span>

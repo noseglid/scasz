@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TrackObject } from './SpotifyBindings';
+import { TrackObject } from '../SpotifyBindings';
 import cn from 'classnames';
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
   onClick: () => void;
 }
 
-export const Track: React.SFC<Props> = ({ trackObject, selected, onClick }) => {
+export const Track: React.FunctionComponent<Props> = ({ trackObject, selected, onClick }) => {
   let image = trackObject.album.images.find((i) => i.width === 640);
   if (image === undefined) {
     image = trackObject.album.images[0];
