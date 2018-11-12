@@ -1,7 +1,9 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import { SpotifyBindings } from './SpotifyBindings';
+import { withSpotifyContext } from './SpotifyContext';
 
 interface Props {
-  access_token: string;
+  spotifyBindings: SpotifyBindings | null;
 }
 
 interface UserObject {
@@ -11,20 +13,23 @@ interface UserObject {
   display_name: string;
 }
 
-export const SpotifyMe: FunctionComponent<Props> = ({ access_token }) => {
+const SpotifyMe: FunctionComponent<Props> = ({ spotifyBindings }) => {
   const [user, setUser] = useState<UserObject | undefined>(undefined);
-  useEffect(() => {
-    const initialize = async () => {
-      const response = await fetch(`https://api.spotify.com/v1/me`, {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      });
-      setUser(await response.json());
-    };
+  useEffect(
+    () => {
+      if (null == spotifyBindings) {
+        return;
+      }
 
-    initialize();
-  }, []);
+      const initialize = async () => {
+        const user = await spotifyBindings.me();
+        setUser(user);
+      };
+
+      initialize();
+    },
+    [spotifyBindings]
+  );
 
   if (user === undefined) {
     return null;
@@ -32,3 +37,6 @@ export const SpotifyMe: FunctionComponent<Props> = ({ access_token }) => {
 
   return <h1>User {user.id}</h1>;
 };
+
+const SpotifyMeWithContext = withSpotifyContext(SpotifyMe);
+export { SpotifyMeWithContext as SpotifyMe };

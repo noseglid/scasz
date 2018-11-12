@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { SpotifyBindings, TrackObject } from '../SpotifyBindings';
+import { withSpotifyContext } from '../SpotifyContext';
 import { ArtistPick } from './ArtistPick';
 import './guess-track.scss';
 import { GuessTrackCenter } from './GuessTrackCenter';
 import { Player } from './Player';
-import { Spotify, TrackObject } from '../SpotifyBindings';
 import { TrackPick } from './TrackPick';
 
 interface Picked {
@@ -11,27 +12,23 @@ interface Picked {
   name: string;
 }
 
-export const GuessTrack: React.FunctionComponent = () => {
+interface Props {
+  spotifyBindings: SpotifyBindings;
+}
+
+const GuessTrack: React.FunctionComponent<Props> = ({ spotifyBindings }) => {
   const [tracks, setTracks] = useState<TrackObject[]>([]);
   const [pickedArtist, setPickedArtist] = useState<Picked | undefined>(undefined);
   const [pickedTrack, setPickedTrack] = useState<Picked | undefined>(undefined);
-  const [spotify] = useState<Spotify>(() => {
-    const token = window.localStorage.getItem('access_token');
-    if (!token) {
-      throw new Error('no access_token');
-    }
-
-    return new Spotify(token);
-  });
 
   useEffect(() => {
     async function getTracks() {
       const [topArtists, topTracks] = await Promise.all([
-        spotify.getTopArtists(),
-        spotify.getTopTracks(),
+        spotifyBindings.getTopArtists(),
+        spotifyBindings.getTopTracks(),
       ]);
 
-      const tracks = await spotify.getRecommendations({
+      const tracks = await spotifyBindings.getRecommendations({
         artistIDs: topArtists.map((artist) => artist.id),
         trackIDs: topTracks.map((track) => track.id),
       });
@@ -81,16 +78,14 @@ export const GuessTrack: React.FunctionComponent = () => {
   const trackObject = tracks[0];
   return (
     <>
-      <Player spotify={spotify} trackObject={trackObject} seekSeconds={20} />
+      <Player trackObject={trackObject} seekSeconds={20} />
       <div className="guess-track" key={trackObject.uri}>
         <ArtistPick
-          spotify={spotify}
           trackObject={trackObject}
           onPick={onPickArtist}
           pickedArtist={pickedArtist ? pickedArtist.id : undefined}
         />
         <TrackPick
-          spotify={spotify}
           trackObject={trackObject}
           onPick={onPickTrack}
           pickedTrack={pickedTrack ? pickedTrack.id : undefined}
@@ -105,22 +100,5 @@ export const GuessTrack: React.FunctionComponent = () => {
   );
 };
 
-// export class GuessTrack extends React.Component<Props, State> {
-//   private spotify: Spotify;
-
-//   constructor(props: Props) {
-//   }
-
-//   async getTracks() {
-//   }
-
-//   componentDidMount() {
-//     this.getTracks();
-//   }
-
-//   submit = () => {
-//   };
-
-//   render() {
-
-// }
+const GuessTrackWithContext = withSpotifyContext(GuessTrack);
+export { GuessTrackWithContext as GuessTrack };

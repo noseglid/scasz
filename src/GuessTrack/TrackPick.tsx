@@ -1,18 +1,19 @@
 import React, { FunctionComponent, useState, useEffect } from 'react';
-import { Spotify, TrackObject } from '../SpotifyBindings';
+import { SpotifyBindings, TrackObject } from '../SpotifyBindings';
 import { Track } from './Track';
 import { shuffle } from '../util';
+import { withSpotifyContext } from '../SpotifyContext';
 
 interface Props {
   trackObject: TrackObject;
-  spotify: Spotify;
+  spotifyBindings: SpotifyBindings;
   pickedTrack?: string;
   onPick: (id: string, name: string) => void;
 }
 
-export const TrackPick: FunctionComponent<Props> = ({
+const TrackPick: FunctionComponent<Props> = ({
   trackObject,
-  spotify,
+  spotifyBindings,
   pickedTrack,
   onPick,
 }) => {
@@ -20,7 +21,7 @@ export const TrackPick: FunctionComponent<Props> = ({
 
   useEffect(() => {
     async function initialize() {
-      const tracks = await spotify.getRecommendations({ trackIDs: [trackObject.id] });
+      const tracks = await spotifyBindings.getRecommendations({ trackIDs: [trackObject.id] });
 
       const alternatives = shuffle(
         shuffle(tracks)
@@ -47,22 +48,5 @@ export const TrackPick: FunctionComponent<Props> = ({
   );
 };
 
-// export class TrackPick extends React.Component<Props, State> {
-//   constructor(props: Props) {
-//     super(props);
-//     this.state = {
-//       alternatives: [],
-//     };
-//   }
-
-//   async componentDidMount() {
-//   }
-
-//   render() {
-//     const { alternatives } = this.state;
-//     if (alternatives.length === 0) {
-//       return null;
-//     }
-
-//   }
-// }
+const TrackPickWithContext = withSpotifyContext(TrackPick);
+export { TrackPickWithContext as TrackPick };

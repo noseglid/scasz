@@ -1,5 +1,12 @@
 import { ParsedUrlQuery, stringify } from 'querystring';
 
+interface UserObject {
+  id: string;
+  birthdate: string;
+  country: string;
+  display_name: string;
+}
+
 export interface Image {
   height: number;
   width: number;
@@ -43,7 +50,7 @@ interface RequestOptions extends RequestInit {
   query?: ParsedUrlQuery;
 }
 
-export class Spotify {
+export class SpotifyBindings {
   private accessToken: string;
 
   constructor(accessToken: string) {
@@ -88,6 +95,10 @@ export class Spotify {
     }
 
     return <any>Promise.resolve();
+  }
+
+  async me(): Promise<UserObject> {
+    return this.request<UserObject>(`me`);
   }
 
   async play(trackID: string, deviceID: string, positionSeconds: number = 0) {

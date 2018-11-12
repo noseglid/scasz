@@ -1,3 +1,11 @@
 import React, { FunctionComponent } from 'react';
+import { SpotifyMe } from './SpotifyMe';
 
-export const Header: FunctionComponent = () => <h1>Music Quiz</h1>;
+const Header: FunctionComponent = () => (
+  <>
+    <h1>Music Quiz</h1>
+    <SpotifyMe />
+  </>
+);
+
+export { Header };
