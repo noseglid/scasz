@@ -1,3 +1,4 @@
+import './spotify-me.scss';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { SpotifyBindings } from './SpotifyBindings';
 import { withSpotifyContext } from './SpotifyContext';
@@ -35,7 +36,11 @@ const SpotifyMe: FunctionComponent<Props> = ({ spotifyBindings }) => {
     return null;
   }
 
-  return <h1>User {user.id}</h1>;
+  return (
+    <div className="spotify-me">
+      <span>User {user.id}</span>
+    </div>
+  );
 };
 
 const SpotifyMeWithContext = withSpotifyContext(SpotifyMe);

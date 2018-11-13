@@ -1,5 +1,15 @@
+@import './colors.scss';
+
 .login {
   width: 100%;
   display: flex;
   justify-content: center;
+
+  button {
+    width: 120px;
+    height: 60px;
+    font-size: 18px;
+    color: white;
+    background-color: rgba($tertiary, 0.3);
+  }
 }
