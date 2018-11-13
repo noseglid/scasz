@@ -1,18 +1,21 @@
 import React, { createContext, FunctionComponent } from 'react';
-import { SpotifyBindings } from './SpotifyBindings';
+import { SpotifyBindings, UserObject } from './SpotifyBindings';
 
-type ContextType = SpotifyBindings | null;
-
-interface PropsType {
-  spotifyBindings: ContextType;
+export interface SpotifyContextType {
+  bindings?: SpotifyBindings;
+  user?: UserObject;
 }
 
-export const SpotifyContext = createContext<ContextType>(null);
+interface PropsType {
+  spotify: SpotifyContextType;
+}
+
+export const SpotifyContext = createContext<SpotifyContextType>({});
 
 export const withSpotifyContext = <P extends PropsType>(Component: FunctionComponent<P>) => (
   props: Pick<P, Exclude<keyof P, keyof PropsType>>
 ) => (
   <SpotifyContext.Consumer>
-    {(spotifyBindings) => <Component {...props} spotifyBindings={spotifyBindings} />}
+    {(spotify) => <Component {...props} spotify={spotify} />}
   </SpotifyContext.Consumer>
 );

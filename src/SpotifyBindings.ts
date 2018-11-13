@@ -1,6 +1,6 @@
 import { ParsedUrlQuery, stringify } from 'querystring';
 
-interface UserObject {
+export interface UserObject {
   id: string;
   birthdate: string;
   country: string;

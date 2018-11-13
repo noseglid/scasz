@@ -1,6 +1,6 @@
-import { useState, useEffect, FunctionComponent } from 'react';
-import { SpotifyBindings, TrackObject } from '../SpotifyBindings';
-import { withSpotifyContext } from '../SpotifyContext';
+import { FunctionComponent, useEffect, useState } from 'react';
+import { TrackObject } from '../SpotifyBindings';
+import { SpotifyContextType, withSpotifyContext } from '../SpotifyContext';
 
 let spotifyReady = false;
 let onSpotifyReady = () => {};
@@ -11,17 +11,21 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 };
 
 interface Props {
-  spotifyBindings: SpotifyBindings;
+  spotify: SpotifyContextType;
   trackObject: TrackObject;
   seekSeconds?: number;
 }
 
-const Player: FunctionComponent<Props> = ({ spotifyBindings, trackObject, seekSeconds }) => {
+const Player: FunctionComponent<Props> = ({ spotify: { bindings }, trackObject, seekSeconds }) => {
+  if (undefined === bindings) {
+    return null;
+  }
+
   const [deviceID, setDeviceID] = useState<string | undefined>(undefined);
   const [player] = useState<Spotify.SpotifyPlayer>(() => {
     return new Spotify.Player({
       name: 'Music quiz web player',
-      getOAuthToken: (cb) => cb(spotifyBindings.getAccessToken()),
+      getOAuthToken: (cb) => cb(bindings.getAccessToken()),
     });
   });
 
@@ -31,7 +35,7 @@ const Player: FunctionComponent<Props> = ({ spotifyBindings, trackObject, seekSe
         return;
       }
 
-      spotifyBindings.play(trackObject.uri, deviceID, seekSeconds);
+      bindings.play(trackObject.uri, deviceID, seekSeconds);
     },
     [trackObject, deviceID]
   );

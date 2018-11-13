@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { SpotifyBindings, TrackObject } from '../SpotifyBindings';
-import { withSpotifyContext } from '../SpotifyContext';
+import { TrackObject } from '../SpotifyBindings';
+import { SpotifyContextType, withSpotifyContext } from '../SpotifyContext';
 import { ArtistPick } from './ArtistPick';
 import './guess-track.scss';
 import { GuessTrackCenter } from './GuessTrackCenter';
@@ -13,22 +13,25 @@ interface Picked {
 }
 
 interface Props {
-  spotifyBindings: SpotifyBindings;
+  spotify: SpotifyContextType;
 }
 
-const GuessTrack: React.FunctionComponent<Props> = ({ spotifyBindings }) => {
+const GuessTrack: React.FunctionComponent<Props> = ({ spotify: { bindings } }) => {
   const [tracks, setTracks] = useState<TrackObject[]>([]);
   const [pickedArtist, setPickedArtist] = useState<Picked | undefined>(undefined);
   const [pickedTrack, setPickedTrack] = useState<Picked | undefined>(undefined);
 
   useEffect(() => {
     async function getTracks() {
+      if (undefined === bindings) {
+        return;
+      }
       const [topArtists, topTracks] = await Promise.all([
-        spotifyBindings.getTopArtists(),
-        spotifyBindings.getTopTracks(),
+        bindings.getTopArtists(),
+        bindings.getTopTracks(),
       ]);
 
-      const tracks = await spotifyBindings.getRecommendations({
+      const tracks = await bindings.getRecommendations({
         artistIDs: topArtists.map((artist) => artist.id),
         trackIDs: topTracks.map((track) => track.id),
       });

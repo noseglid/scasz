@@ -1,19 +1,19 @@
-import React, { FunctionComponent, useState, useEffect } from 'react';
-import { SpotifyBindings, TrackObject } from '../SpotifyBindings';
-import { Track } from './Track';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { TrackObject } from '../SpotifyBindings';
+import { SpotifyContextType, withSpotifyContext } from '../SpotifyContext';
 import { shuffle } from '../util';
-import { withSpotifyContext } from '../SpotifyContext';
+import { Track } from './Track';
 
 interface Props {
   trackObject: TrackObject;
-  spotifyBindings: SpotifyBindings;
+  spotify: SpotifyContextType;
   pickedTrack?: string;
   onPick: (id: string, name: string) => void;
 }
 
 const TrackPick: FunctionComponent<Props> = ({
   trackObject,
-  spotifyBindings,
+  spotify: { bindings },
   pickedTrack,
   onPick,
 }) => {
@@ -21,7 +21,11 @@ const TrackPick: FunctionComponent<Props> = ({
 
   useEffect(() => {
     async function initialize() {
-      const tracks = await spotifyBindings.getRecommendations({ trackIDs: [trackObject.id] });
+      if (undefined === bindings) {
+        return;
+      }
+
+      const tracks = await bindings.getRecommendations({ trackIDs: [trackObject.id] });
 
       const alternatives = shuffle(
         shuffle(tracks)

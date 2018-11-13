@@ -1,9 +1,8 @@
-import './login.scss';
-import React, { FunctionComponent, useEffect } from 'react';
-import { stringify } from 'querystring';
-import { withSpotifyContext } from './SpotifyContext';
-import { SpotifyBindings } from './SpotifyBindings';
 import { History } from 'history';
+import { stringify } from 'querystring';
+import React, { FunctionComponent, useEffect } from 'react';
+import './login.scss';
+import { SpotifyContextType, withSpotifyContext } from './SpotifyContext';
 
 const onLogin = () => {
   const qs = stringify({
@@ -17,23 +16,19 @@ const onLogin = () => {
 };
 
 interface Props {
-  spotifyBindings: SpotifyBindings;
+  spotify: SpotifyContextType;
   history: History;
 }
 
-const Login: FunctionComponent<Props> = ({ spotifyBindings, history }) => {
-  useEffect(() => {
-    async function initialize() {
-      try {
-        await spotifyBindings.me();
-        console.log('pushing', history);
+const Login: FunctionComponent<Props> = ({ spotify: { user }, history }) => {
+  useEffect(
+    () => {
+      if (undefined !== user) {
         history.push('/i');
-      } catch (e) {
-        // Not logged in, do nothing
       }
-    }
-    initialize();
-  }, []);
+    },
+    [user]
+  );
 
   return (
     <div className="login">

@@ -1,19 +1,19 @@
-import React, { FunctionComponent, useState, useEffect } from 'react';
-import { Artist } from './Artist';
-import { ArtistObject, SpotifyBindings, TrackObject } from '../SpotifyBindings';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { ArtistObject, TrackObject } from '../SpotifyBindings';
+import { SpotifyContextType, withSpotifyContext } from '../SpotifyContext';
 import { shuffle } from '../util';
-import { withSpotifyContext } from '../SpotifyContext';
+import { Artist } from './Artist';
 
 interface Props {
   trackObject: TrackObject;
-  spotifyBindings: SpotifyBindings;
+  spotify: SpotifyContextType;
   pickedArtist?: string;
   onPick: (id: string, name: string) => void;
 }
 
 const ArtistPick: FunctionComponent<Props> = ({
   trackObject,
-  spotifyBindings,
+  spotify: { bindings },
   pickedArtist,
   onPick,
 }) => {
@@ -21,8 +21,12 @@ const ArtistPick: FunctionComponent<Props> = ({
 
   useEffect(() => {
     async function initialize() {
-      const artist = await spotifyBindings.getArtist(trackObject.artists[0].id);
-      const relatedArtists = await spotifyBindings.getRelatedArtists(artist.id);
+      if (undefined === bindings) {
+        return;
+      }
+
+      const artist = await bindings.getArtist(trackObject.artists[0].id);
+      const relatedArtists = await bindings.getRelatedArtists(artist.id);
       const alternatives = shuffle(
         shuffle(relatedArtists)
           .slice(0, 4)

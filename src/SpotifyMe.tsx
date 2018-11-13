@@ -1,37 +1,12 @@
+import React, { FunctionComponent } from 'react';
 import './spotify-me.scss';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { SpotifyBindings } from './SpotifyBindings';
-import { withSpotifyContext } from './SpotifyContext';
+import { SpotifyContextType, withSpotifyContext } from './SpotifyContext';
 
 interface Props {
-  spotifyBindings: SpotifyBindings | null;
+  spotify: SpotifyContextType;
 }
 
-interface UserObject {
-  id: string;
-  birthdate: string;
-  country: string;
-  display_name: string;
-}
-
-const SpotifyMe: FunctionComponent<Props> = ({ spotifyBindings }) => {
-  const [user, setUser] = useState<UserObject | undefined>(undefined);
-  useEffect(
-    () => {
-      if (null == spotifyBindings) {
-        return;
-      }
-
-      const initialize = async () => {
-        const user = await spotifyBindings.me();
-        setUser(user);
-      };
-
-      initialize();
-    },
-    [spotifyBindings]
-  );
-
+const SpotifyMe: FunctionComponent<Props> = ({ spotify: { user } }) => {
   if (user === undefined) {
     return null;
   }

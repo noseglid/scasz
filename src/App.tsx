@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useState, useEffect } from 'react';
 import { SpotifyContext } from './SpotifyContext';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Authorized } from './Authorized';
@@ -6,25 +6,41 @@ import { GuessTrack } from './GuessTrack';
 import { Header } from './Header';
 import { Login } from './Login';
 import './styles.scss';
-import { SpotifyBindings } from './SpotifyBindings';
+import { SpotifyBindings, UserObject } from './SpotifyBindings';
 
 export const App: FunctionComponent = () => {
-  const [spotify, setSpotify] = useState<SpotifyBindings | null>(() => {
+  const [bindings, setBindings] = useState<SpotifyBindings | undefined>(() => {
     const token = window.localStorage.getItem('access_token');
     if (null === token) {
-      return null;
+      return undefined;
     }
 
     return new SpotifyBindings(token);
   });
 
+  const [user, setUser] = useState<UserObject | undefined>(undefined);
+
   const onActionToken = (token: string) => {
-    setSpotify(new SpotifyBindings(token));
+    setBindings(new SpotifyBindings(token));
   };
+
+  useEffect(
+    () => {
+      async function initialize() {
+        if (undefined === bindings) {
+          return;
+        }
+
+        setUser(await bindings.me());
+      }
+      initialize();
+    },
+    [bindings]
+  );
 
   return (
     <>
-      <SpotifyContext.Provider value={spotify}>
+      <SpotifyContext.Provider value={{ bindings, user }}>
         <Header />
         <BrowserRouter>
           <Switch>
