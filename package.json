@@ -26,6 +26,7 @@
     "typescript": "~3.1.6"
   },
   "scripts": {
-    "start": "parcel index.html"
+    "start": "parcel index.html",
+    "build": "parcel build index.html"
   }
 }
