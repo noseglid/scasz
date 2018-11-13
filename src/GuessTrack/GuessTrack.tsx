@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TrackObject } from '../SpotifyBindings';
-import { SpotifyContextType, withSpotifyContext } from '../SpotifyContext';
+import { SpotifyContextType, TrackObject, withSpotifyContext } from '../Spotify';
 import { ArtistPick } from './ArtistPick';
 import './guess-track.scss';
 import { GuessTrackCenter } from './GuessTrackCenter';
@@ -22,7 +21,7 @@ const GuessTrack: React.FunctionComponent<Props> = ({ spotify: { bindings } }) =
   const [pickedTrack, setPickedTrack] = useState<Picked | undefined>(undefined);
 
   useEffect(() => {
-    async function getTracks() {
+    async function initialize() {
       if (undefined === bindings) {
         return;
       }
@@ -39,7 +38,7 @@ const GuessTrack: React.FunctionComponent<Props> = ({ spotify: { bindings } }) =
       setTracks(tracks);
     }
 
-    getTracks();
+    initialize();
   }, []);
 
   const onPickArtist = (id: string, name: string) => {

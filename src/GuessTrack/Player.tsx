@@ -1,6 +1,5 @@
 import { FunctionComponent, useEffect, useState } from 'react';
-import { TrackObject } from '../SpotifyBindings';
-import { SpotifyContextType, withSpotifyContext } from '../SpotifyContext';
+import { TrackObject, SpotifyContextType, withSpotifyContext } from '../Spotify';
 
 let spotifyReady = false;
 let onSpotifyReady = () => {};

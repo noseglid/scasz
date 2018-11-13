@@ -1,6 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { TrackObject } from '../SpotifyBindings';
-import { SpotifyContextType, withSpotifyContext } from '../SpotifyContext';
+import { TrackObject, SpotifyContextType, withSpotifyContext } from '../Spotify';
 import { shuffle } from '../util';
 import { Track } from './Track';
 

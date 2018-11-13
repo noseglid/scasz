@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import './spotify-me.scss';
-import { SpotifyContextType, withSpotifyContext } from './SpotifyContext';
+import { SpotifyContextType, withSpotifyContext } from './Spotify';
 
 interface Props {
   spotify: SpotifyContextType;

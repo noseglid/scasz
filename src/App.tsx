@@ -1,61 +1,31 @@
-import React, { FunctionComponent, useState, useEffect } from 'react';
-import { SpotifyContext } from './SpotifyContext';
+import React, { FunctionComponent, useState } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Authorized } from './Authorized';
 import { GuessTrack } from './GuessTrack';
 import { Header } from './Header';
 import { Login } from './Login';
+import { SpotifyProvider } from './Spotify';
 import './styles.scss';
-import { SpotifyBindings, UserObject } from './SpotifyBindings';
 
 export const App: FunctionComponent = () => {
-  const [bindings, setBindings] = useState<SpotifyBindings | undefined>(() => {
-    const token = window.localStorage.getItem('access_token');
-    if (null === token) {
-      return undefined;
-    }
-
-    return new SpotifyBindings(token);
-  });
-
-  const [user, setUser] = useState<UserObject | undefined>(undefined);
-
-  const onActionToken = (token: string) => {
-    setBindings(new SpotifyBindings(token));
-  };
-
-  useEffect(
-    () => {
-      async function initialize() {
-        if (undefined === bindings) {
-          return;
-        }
-
-        setUser(await bindings.me());
-      }
-      initialize();
-    },
-    [bindings]
-  );
+  const [token, setToken] = useState<string | null>(window.localStorage.getItem('access_token'));
 
   return (
     <>
-      <SpotifyContext.Provider value={{ bindings, user }}>
+      <SpotifyProvider token={token}>
         <Header />
         <BrowserRouter>
           <Switch>
             <Route
               exact
               path="/authorized"
-              render={({ history }) => (
-                <Authorized history={history} onActionToken={onActionToken} />
-              )}
+              render={({ history }) => <Authorized history={history} onActionToken={setToken} />}
             />
             <Route exact strict path="/i" component={GuessTrack} />
             <Route exact path="/" component={Login} />
           </Switch>
         </BrowserRouter>
-      </SpotifyContext.Provider>
+      </SpotifyProvider>
     </>
   );
 };

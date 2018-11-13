@@ -1,4 +1,5 @@
 import { ParsedUrlQuery, stringify } from 'querystring';
+import { shuffle } from '../util';
 
 export interface UserObject {
   id: string;
@@ -149,10 +150,14 @@ export class SpotifyBindings {
     const query: ParsedUrlQuery = {};
 
     if (artistIDs.length > 0) {
-      query.seed_artists = artistIDs.slice(0, 5).join(',');
+      query.seed_artists = shuffle(artistIDs)
+        .slice(0, 2)
+        .join(',');
     }
     if (trackIDs.length > 0) {
-      query.seed_tracks = trackIDs.slice(0, Math.max(0, 5 - artistIDs.length)).join(',');
+      query.seed_tracks = shuffle(trackIDs)
+        .slice(0, 3)
+        .join(',');
     }
 
     return (await this.request<Payload>(`recommendations`, { query })).tracks;

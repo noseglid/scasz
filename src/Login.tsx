@@ -2,7 +2,7 @@ import { History } from 'history';
 import { stringify } from 'querystring';
 import React, { FunctionComponent, useEffect } from 'react';
 import './login.scss';
-import { SpotifyContextType, withSpotifyContext } from './SpotifyContext';
+import { SpotifyContextType, withSpotifyContext } from './Spotify';
 
 const onLogin = () => {
   const qs = stringify({
