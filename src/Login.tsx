@@ -9,7 +9,7 @@ const onLogin = () => {
     response_type: 'token',
     client_id: '602140cd526e461e86264f40d1c4435e',
     scope: 'streaming user-read-birthdate user-read-email user-read-private user-top-read',
-    redirect_uri: `http://${window.location.host}/authorized`,
+    redirect_uri: `${window.location.origin}/authorized`,
     state: '',
   });
   window.location.assign(`https://accounts.spotify.com/authorize?${qs}`);
