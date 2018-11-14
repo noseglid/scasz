@@ -152,4 +152,4 @@ var e;!function(){"use strict";var r={}.hasOwnProperty;function n(){for(var e=[]
 },{"react":"HdMw","react-router-dom":"pvo3","./Authorized":"nAik","./GuessTrack":"qUMe","./Header":"R0Vo","./Login":"UGZO","./Spotify":"CJeC","./styles.scss":"aiJW"}],"OGgv":[function(require,module,exports) {
 "use strict";var e=o(require("react")),t=require("react-dom"),r=require("./App");function o(e){if(e&&e.__esModule)return e;var t={};if(null!=e)for(var r in e)if(Object.prototype.hasOwnProperty.call(e,r)){var o=Object.defineProperty&&Object.getOwnPropertyDescriptor?Object.getOwnPropertyDescriptor(e,r):{};o.get||o.set?Object.defineProperty(t,r,o):t[r]=e[r]}return t.default=e,t}window.onload=function(){(0,t.render)(e.createElement(r.App,null),document.getElementById("content"))},module.hot&&module.hot.accept(function(){location.reload()});
 },{"react":"HdMw","react-dom":"X9zx","./App":"Ru8j"}]},{},["OGgv"], null)
-//# sourceMappingURL=/src.47800efe.map
+//# sourceMappingURL=/scasz/src.47800efe.map
