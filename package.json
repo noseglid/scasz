@@ -28,7 +28,9 @@
   "scripts": {
     "start": "parcel index.html",
     "build": "parcel build -d ./docs index.html",
+    "build:commit": "git add docs && git ci -m Prepare release $npm_package_version",
+    "build:push": "git push origin master v$npm_package_version",
     "preversion": "yarn build",
-    "postversion": "git push origin master $npm_package_version && echo Released $npm_package_version"
+    "postversion": "yarn build:commit && yarn build:push && echo Released $npm_package_version"
   }
 }
