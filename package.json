@@ -1,6 +1,6 @@
 {
   "name": "music-quiz",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Music Quiz only with Spotify",
   "main": "index.html",
   "repository": "https://github.com/noseglid/music-quiz",
@@ -27,6 +27,8 @@
   },
   "scripts": {
     "start": "parcel index.html",
-    "build": "parcel build -d ./docs index.html"
+    "build": "parcel build -d ./docs index.html",
+    "preversion": "yarn build",
+    "postversion": "git push origin master $npm_package_version && echo Released $npm_package_version"
   }
 }
