@@ -1,6 +1,6 @@
 {
   "name": "music-quiz",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Music Quiz only with Spotify",
   "main": "index.html",
   "repository": "https://github.com/noseglid/music-quiz",
