@@ -14,14 +14,10 @@ export const App: FunctionComponent = () => {
     <>
       <SpotifyProvider token={token}>
         <Header />
+        <Authorized onActionToken={setToken} />
         <BrowserRouter>
           <Switch>
-            <Route
-              exact
-              path="/authorized"
-              render={({ history }) => <Authorized history={history} onActionToken={setToken} />}
-            />
-            <Route exact strict path="/i" component={GuessTrack} />
+            <Route exact strict path="/play" component={GuessTrack} />
             <Route exact path="/" component={Login} />
           </Switch>
         </BrowserRouter>

@@ -9,7 +9,7 @@ const onLogin = () => {
     response_type: 'token',
     client_id: '602140cd526e461e86264f40d1c4435e',
     scope: 'streaming user-read-birthdate user-read-email user-read-private user-top-read',
-    redirect_uri: `${window.location.origin}/authorized`,
+    redirect_uri: `${window.location.origin}`,
     state: '',
   });
   window.location.assign(`https://accounts.spotify.com/authorize?${qs}`);
@@ -24,7 +24,7 @@ const Login: FunctionComponent<Props> = ({ spotify: { user }, history }) => {
   useEffect(
     () => {
       if (undefined !== user) {
-        history.push('/i');
+        history.push('/play');
       }
     },
     [user]
